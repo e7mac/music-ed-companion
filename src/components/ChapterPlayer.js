@@ -21,6 +21,10 @@ export default function ChapterPlayer(props) {
   return (
     <>
       <h3>{props.examples.name}</h3>
+            <div>
+              <span onClick={selectPreviousItem}>Prev </span>
+              <span onClick={selectNextItem}> Next</span>
+            </div>
       {
         currentIndex
         ? <>
@@ -30,10 +34,6 @@ export default function ChapterPlayer(props) {
           </>
         : ""
       }
-      <div>
-        <span onClick={selectPreviousItem}>Prev</span>
-        <span onClick={selectNextItem}>Next</span>
-      </div>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import ChapterPlayer from './components/ChapterPlayer.js';
+import BookPlayer from './components/BookPlayer.js';
 
 function App() {
 	const [content, setContent] = useState(null)
@@ -28,10 +28,9 @@ function App() {
     {
       content
         ? <>
-            <h1>{content.name}</h1>
-            <ChapterPlayer
-              examples={content.chapters[0]}
-            />
+          <BookPlayer
+            book={content}
+          />
           </>
         : "Loading..."
     }
