@@ -24,7 +24,8 @@ export default function BookPlayer(props) {
         <span onClick={selectNextItem}> Next Ch</span>
       </div>
       <ChapterPlayer
-        examples={props.book.chapters[index]}
+        chapter={props.book.chapters[index]}
+        baseUrl={props.book.baseUrl}
       />
     </>
   );

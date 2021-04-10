@@ -11,20 +11,21 @@ export default function ChapterPlayer(props) {
   }
 
   const selectNextItem = () => {
-    if (index + 1 < props.examples.examples.length) {
+    if (index + 1 < props.chapter.examples.length) {
       setIndex(index + 1);
     }
   }
 
   return (
     <>
-      <h3>{props.examples.name}</h3>
+      <h3>{props.chapter.name}</h3>
       <div>
         <span onClick={selectPreviousItem}>Prev </span>
         <span onClick={selectNextItem}> Next</span>
       </div>
       <ExamplePlayer
-        item={props.examples.examples[index]}
+        item={props.chapter.examples[index]}
+        baseUrl={`${props.baseUrl}${props.chapter.name}/`}
       />
     </>
   );
