@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExamplePlayer from './ExamplePlayer.js';
 import { Button } from 'react-bootstrap';
 
 export default function ChapterPlayer(props) {
   const [index, setIndex] = useState(0)
 
+  useEffect(() => {
+    setIndex(props.exampleIndex)
+  }, [props]);
+
   const selectPreviousItem = () => {
-    if (index - 1 > 0) {
+    if (index > 0) {
       setIndex(index - 1);
     }
   }
