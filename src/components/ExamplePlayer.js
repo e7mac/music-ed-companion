@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 export default function ExamplePlayer(props) {
 	return (
     <>
         <p>
-          <img src={props.item.image}/>
+          <img src={props.item.image} alt="Musical example"/>
         </p>
         <p>
           <midi-player
