@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import BookPlayer from './components/BookPlayer.js';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function App() {
 	const [content, setContent] = useState(null)
@@ -25,7 +28,9 @@ function App() {
   },[])
 
   return (
-    <div className="App">
+    <Container fluid>
+    <Row class="text-center">
+    <Col md="auto">
     {
       content
         ? <>
@@ -35,7 +40,9 @@ function App() {
           </>
         : "Loading..."
     }
-    </div>
+    </Col>
+    </Row>
+    </Container>
   );
 }
 

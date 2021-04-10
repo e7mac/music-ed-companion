@@ -6,9 +6,9 @@ export default function ExamplePlayer(props) {
 	return (
     <>
         <p>
-          <Button onClick={props.prev}>Prev</Button>
+          <Button onClick={props.prev} variant="light">﹤</Button>
           {props.item.name}
-          <Button onClick={props.next}>Next</Button>
+          <Button onClick={props.next} variant="light">﹥</Button>
         </p>
         <p>
           <midi-player

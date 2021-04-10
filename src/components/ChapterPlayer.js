@@ -20,9 +20,9 @@ export default function ChapterPlayer(props) {
   return (
     <>
       <h3>
-          <Button onClick={props.prev}>Prev</Button>
+          <Button onClick={props.prev} variant="light">﹤</Button>
           {props.chapter.name}
-          <Button onClick={props.next}>Next</Button>
+          <Button onClick={props.next} variant="light">﹥</Button>
       </h3>
       <ExamplePlayer
         item={props.chapter.examples[index]}
