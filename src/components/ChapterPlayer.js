@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ExamplePlayer from './ExamplePlayer.js';
+import { Button } from 'react-bootstrap';
 
 export default function ChapterPlayer(props) {
   const [index, setIndex] = useState(0)
@@ -18,14 +19,16 @@ export default function ChapterPlayer(props) {
 
   return (
     <>
-      <h3>{props.chapter.name}</h3>
-      <div>
-        <span onClick={selectPreviousItem}>Prev </span>
-        <span onClick={selectNextItem}> Next</span>
-      </div>
+      <h3>
+          <Button onClick={props.prev}>Prev</Button>
+          {props.chapter.name}
+          <Button onClick={props.next}>Next</Button>
+      </h3>
       <ExamplePlayer
         item={props.chapter.examples[index]}
         baseUrl={`${props.baseUrl}${props.chapter.name}/`}
+        prev={selectPreviousItem}
+        next={selectNextItem}
       />
     </>
   );

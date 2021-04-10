@@ -8,7 +8,8 @@ function App() {
   const getData = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const book = urlParams.get('book')
-    fetch(book ,{
+    fetch(
+      `https://music-ed.s3.us-east-2.amazonaws.com/${book}.json` ,{
       headers : {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

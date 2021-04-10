@@ -19,13 +19,11 @@ export default function BookPlayer(props) {
   return (
     <>
       <h1>{props.book.name}</h1>
-      <div>
-        <span onClick={selectPreviousItem}>Prev Ch </span>
-        <span onClick={selectNextItem}> Next Ch</span>
-      </div>
       <ChapterPlayer
         chapter={props.book.chapters[index]}
         baseUrl={props.book.baseUrl}
+        prev={selectPreviousItem}
+        next={selectNextItem}
       />
     </>
   );
