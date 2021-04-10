@@ -1,39 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ExamplePlayer from './ExamplePlayer.js';
 
 export default function ChapterPlayer(props) {
-  const [currentIndex, setCurrentIndex] = useState(null)
-
-  useEffect( () => {
-    setCurrentIndex(0);
-  },[]);
+  const [index, setIndex] = useState(0)
 
   const selectPreviousItem = () => {
-    const index = currentIndex - 1
-    setCurrentIndex(index);
+    if (index - 1 > 0) {
+      setIndex(index - 1);
+    }
   }
 
   const selectNextItem = () => {
-    const index = currentIndex + 1
-    setCurrentIndex(index);
+    if (index + 1 < props.examples.examples.length) {
+      setIndex(index + 1);
+    }
   }
 
   return (
     <>
       <h3>{props.examples.name}</h3>
-            <div>
-              <span onClick={selectPreviousItem}>Prev </span>
-              <span onClick={selectNextItem}> Next</span>
-            </div>
-      {
-        currentIndex
-        ? <>
-            <ExamplePlayer
-              item={props.examples.examples[currentIndex]}
-            />
-          </>
-        : ""
-      }
+      <div>
+        <span onClick={selectPreviousItem}>Prev </span>
+        <span onClick={selectNextItem}> Next</span>
+      </div>
+      <ExamplePlayer
+        item={props.examples.examples[index]}
+      />
     </>
   );
 }
