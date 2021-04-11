@@ -1,39 +1,66 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ExamplePlayer from './ExamplePlayer.js';
 import { Button } from 'react-bootstrap';
 
-export default function ChapterPlayer(props) {
-  const [index, setIndex] = useState(0)
-
-  useEffect(() => {
-    setIndex(props.exampleIndex)
-  }, [props]);
-
-  const selectPreviousItem = () => {
-    if (index > 0) {
-      setIndex(index - 1);
+export default class ChapterPlayer extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      index: 0
     }
   }
 
-  const selectNextItem = () => {
-    if (index + 1 < props.chapter.examples.length) {
-      setIndex(index + 1);
+  componentDidMount() {
+    window.addEventListener("keydown", this.handleKeyPress);
+  }
+
+  componentDidUnmount() {
+    window.removeEventListener("keydown", this.handleKeyPress);
+  }
+
+  selectPreviousItem = () => {
+    if (this.state.index > 0) {
+      this.setState({
+        index:this.state.index - 1
+      })
     }
   }
 
-  return (
+  selectNextItem = () => {
+    if (this.state.index + 1 < this.props.chapter.examples.length) {
+      this.setState({
+        index:this.state.index + 1
+      })
+    }
+  }
+
+  handleKeyPress = (e) => {
+    if (e.key==="ArrowLeft") {
+      this.selectPreviousItem()
+    } else if (e.key==="ArrowRight") {
+      this.selectNextItem()
+    } else if (e.key==="ArrowUp") {
+      this.props.next()
+    } else if (e.key==="ArrowDown") {
+      this.props.prev()
+    }
+  }
+
+  render() {
+    return (
     <>
       <h3>
-          <Button onClick={props.prev} variant="light">﹤</Button>
-          {props.chapter.name}
-          <Button onClick={props.next} variant="light">﹥</Button>
+          <Button onClick={this.props.prev} variant="light">﹤</Button>
+          {this.props.chapter.name}
+          <Button onClick={this.props.next} variant="light">﹥</Button>
       </h3>
       <ExamplePlayer
-        item={props.chapter.examples[index]}
-        baseUrl={`${props.baseUrl}${props.chapter.name}/`}
-        prev={selectPreviousItem}
-        next={selectNextItem}
+        item={this.props.chapter.examples[this.state.index]}
+        baseUrl={`${this.props.baseUrl}${this.props.chapter.name}/`}
+        prev={this.selectPreviousItem}
+        next={this.selectNextItem}
       />
     </>
   );
+  }
 }
