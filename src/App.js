@@ -52,7 +52,7 @@ function App() {
             <NavDropdown title="Books" id="basic-nav-dropdown">
               {
                 books.map( book => {
-                  return <NavDropdown.Item href={`/?book=${book}`}>{book}</NavDropdown.Item>
+                  return <NavDropdown.Item href={`?book=${book}`}>{book}</NavDropdown.Item>
                 })
               }
             </NavDropdown>
