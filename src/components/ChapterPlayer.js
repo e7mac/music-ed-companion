@@ -40,8 +40,14 @@ export default class ChapterPlayer extends React.Component {
     } else if (e.key==="ArrowRight") {
       this.selectNextItem()
     } else if (e.key==="ArrowUp") {
+      this.setState({
+        index:0
+      })
       this.props.next()
     } else if (e.key==="ArrowDown") {
+      this.setState({
+        index:0
+      })
       this.props.prev()
     }
   }
