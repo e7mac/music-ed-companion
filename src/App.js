@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import BookPlayer from './components/BookPlayer.js';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Col, Container, Nav, Navbar, NavDropdown, Row } from 'react-bootstrap';
 import unmute from './lib/unmute'
 
 function App() {
@@ -24,6 +22,17 @@ function App() {
       setContent(response);
     });
   }
+
+  const books = [
+    'Applied Counterpoint',
+    'Contemporary Harmony',
+    'Creative Orchestration',
+    'Elementary Counterpoint',
+    'Musical Composition Craft And Art',
+    'Structural Functions Of Harmony',
+    'Twentieth Century Harmony'
+  ]
+
   useEffect(()=>{
     getData()
     let context = (window.AudioContext || window.webkitAudioContext)
@@ -35,19 +44,34 @@ function App() {
 
   return (
     <Container fluid>
-    <Row class="text-center">
-    <Col md="auto">
-    {
-      content
-        ? <>
-          <BookPlayer
-            book={content}
-          />
-          </>
-        : "Loading..."
-    }
-    </Col>
-    </Row>
+      <Navbar bg="light" expand="lg">
+        <Navbar.Brand href="#home">Music Ed</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <NavDropdown title="Books" id="basic-nav-dropdown">
+              {
+                books.map( book => {
+                  return <NavDropdown.Item href={`/?book=${book}`}>{book}</NavDropdown.Item>
+                })
+              }
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      <Row class="text-center">
+        <Col md="auto">
+        {
+          content
+            ? <>
+              <BookPlayer
+                book={content}
+              />
+              </>
+            : "Pick a book"
+        }
+        </Col>
+      </Row>
     </Container>
   );
 }
