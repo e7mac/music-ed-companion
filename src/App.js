@@ -4,6 +4,7 @@ import BookPlayer from './components/BookPlayer.js';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import unmute from './lib/unmute'
 
 function App() {
 	const [content, setContent] = useState(null)
@@ -25,6 +26,11 @@ function App() {
   }
   useEffect(()=>{
     getData()
+    let context = (window.AudioContext || window.webkitAudioContext)
+    ? new (window.AudioContext || window.webkitAudioContext)()
+    : null;
+    // Pass it to unmute if the context exists... ie WebAudio is supported
+    if (context) unmute(context);
   },[])
 
   return (
