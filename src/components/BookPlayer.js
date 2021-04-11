@@ -37,10 +37,10 @@ export default function BookPlayer(props) {
         {
           props.book.chapters.map( (data, idx) => {
             return  <Card>
-                      <Accordion.Toggle as={Card.Header} variant="link" eventKey={idx}>
+                      <Accordion.Toggle as={Card.Header} variant="link" eventKey={idx+1}>
                         {data.name}
                       </Accordion.Toggle>
-                      <Accordion.Collapse eventKey={idx}>
+                      <Accordion.Collapse eventKey={idx+1}>
                       <ListGroup>
                       {
                         data.examples.map( (ex, idx2) => {
