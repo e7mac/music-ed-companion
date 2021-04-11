@@ -33,7 +33,7 @@ export default function BookPlayer(props) {
         prev={selectPreviousItem}
         next={selectNextItem}
       />
-      <Accordion>
+      <Accordion style="cursor: pointer;">
         {
           props.book.chapters.map( (data, idx) => {
             return  <Card>
