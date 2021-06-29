@@ -30,7 +30,8 @@ function App() {
     'Elementary Counterpoint',
     'Musical Composition Craft And Art',
     'Structural Functions Of Harmony',
-    'Twentieth Century Harmony'
+    'Twentieth Century Harmony',
+    'Modulation'
   ]
 
   useEffect(()=>{
