@@ -5,6 +5,9 @@ export default class ExamplePlayer extends React.Component {
   constructor(props) {
     super(props)
     this.midiRef = React.createRef()
+    this.state = {
+      tempo: 1
+    }
   }
 
   componentDidMount() {
@@ -24,6 +27,22 @@ export default class ExamplePlayer extends React.Component {
     }
   }
 
+  decreaseTempo = () => {
+    var tempo = this.state.tempo;
+    tempo = Math.max(0.1, tempo - 0.1);
+    this.setState({
+      tempo: tempo
+    })
+  }
+
+  increaseTempo = () => {
+    var tempo = this.state.tempo;
+    tempo = Math.min(5.0, tempo + 0.1);
+    this.setState({
+      tempo: tempo
+    })
+  }
+
   render() {
     return (
       <>
@@ -38,6 +57,13 @@ export default class ExamplePlayer extends React.Component {
               src={this.props.baseUrl + this.props.item.midi}
               sound-font="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus"
             />
+          </p>
+          <p>
+            Tempo:
+            <Button onClick={this.decreaseTempo} variant="light">-</Button>
+            {this.state.tempo.toFixed(1)}x
+            <Button onClick={this.increaseTempo} variant="light">+</Button>
+            (Feature is a WIP)
           </p>
           <p>
             <img src={this.props.baseUrl + this.props.item.image} alt="Musical example"/>
