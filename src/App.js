@@ -31,7 +31,8 @@ function App() {
     'Musical Composition Craft And Art',
     'Structural Functions Of Harmony',
     'Twentieth Century Harmony',
-    'Modulation'
+    'Modulation',
+    'Brahms And The Principle Of Developing Variation',
   ]
 
   useEffect(()=>{
