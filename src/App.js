@@ -33,6 +33,7 @@ function App() {
     'Twentieth Century Harmony',
     'Modulation',
     'Brahms And The Principle Of Developing Variation',
+    'The Shaping Forces In Music',
   ]
 
   useEffect(()=>{
