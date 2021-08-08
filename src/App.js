@@ -34,6 +34,7 @@ function App() {
     'Modulation',
     'Brahms And The Principle Of Developing Variation',
     'The Shaping Forces In Music',
+    'Fundamentals of Musical Composition',
   ]
 
   useEffect(()=>{
