@@ -35,6 +35,7 @@ function App() {
     'Brahms And The Principle Of Developing Variation',
     'The Shaping Forces In Music',
     'Fundamentals Of Musical Composition',
+    'JapaneseMusicHarmonyVol1',
   ]
 
   useEffect(()=>{
