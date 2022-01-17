@@ -65,7 +65,7 @@ export default class ExamplePlayer extends React.Component {
                   <source 
                     src={this.props.baseUrl + this.props.item.mp3} 
                     type="audio/mp3"
-                   >
+                   />
                 </audio>
               : ""
             }
