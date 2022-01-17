@@ -52,11 +52,23 @@ export default class ExamplePlayer extends React.Component {
             <Button onClick={this.props.next} variant="light">﹥</Button>
           </p>
           <p>
-            <midi-player
-              ref={this.midiRef}
-              src={this.props.baseUrl + this.props.item.midi}
-              sound-font="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus"
-            />
+            {this.props.item.midi
+              ? <midi-player
+                  ref={this.midiRef}
+                  src={this.props.baseUrl + this.props.item.midi}
+                  sound-font="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus"
+                />
+              : ""
+            }
+            {this.props.item.mp3
+              ? <audio controls>
+                  <source 
+                    src={this.props.baseUrl + this.props.item.mp3} 
+                    type="audio/mp3"
+                   >
+                </audio>
+              : ""
+            }
           </p>
           <p>
             Tempo:
