@@ -36,6 +36,7 @@ function App() {
     'The Shaping Forces In Music',
     'Fundamentals Of Musical Composition',
     'Japanese Music Harmony Vol1',
+    'Latin Jazz Piano',
   ]
 
   useEffect(()=>{
