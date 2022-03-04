@@ -37,6 +37,7 @@ function App() {
     'Fundamentals Of Musical Composition',
     'Japanese Music Harmony Vol1',
     'Latin Jazz Piano',
+    'Play Latin Piano Like A Pro',
   ]
 
   useEffect(()=>{
