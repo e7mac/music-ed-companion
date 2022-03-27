@@ -38,6 +38,7 @@ function App() {
     'Japanese Music Harmony Vol1',
     'Latin Jazz Piano',
     'Play Latin Piano Like A Pro',
+    'Jazz Piano The Left Hand',
   ]
 
   useEffect(()=>{
