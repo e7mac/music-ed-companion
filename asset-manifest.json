@@ -1,22 +1,15 @@
 {
   "files": {
-    "main.css": "/music-ed-companion/static/css/main.41bffb35.chunk.css",
-    "main.js": "/music-ed-companion/static/js/main.b4963ca7.chunk.js",
-    "main.js.map": "/music-ed-companion/static/js/main.b4963ca7.chunk.js.map",
-    "runtime-main.js": "/music-ed-companion/static/js/runtime-main.23ae6d08.js",
-    "runtime-main.js.map": "/music-ed-companion/static/js/runtime-main.23ae6d08.js.map",
-    "static/js/2.8680e452.chunk.js": "/music-ed-companion/static/js/2.8680e452.chunk.js",
-    "static/js/2.8680e452.chunk.js.map": "/music-ed-companion/static/js/2.8680e452.chunk.js.map",
-    "static/js/3.e8246985.chunk.js": "/music-ed-companion/static/js/3.e8246985.chunk.js",
-    "static/js/3.e8246985.chunk.js.map": "/music-ed-companion/static/js/3.e8246985.chunk.js.map",
+    "main.css": "/music-ed-companion/static/css/main.93ec4393.css",
+    "main.js": "/music-ed-companion/static/js/main.61a241b8.js",
+    "static/js/787.b1245c56.chunk.js": "/music-ed-companion/static/js/787.b1245c56.chunk.js",
     "index.html": "/music-ed-companion/index.html",
-    "static/css/main.41bffb35.chunk.css.map": "/music-ed-companion/static/css/main.41bffb35.chunk.css.map",
-    "static/js/2.8680e452.chunk.js.LICENSE.txt": "/music-ed-companion/static/js/2.8680e452.chunk.js.LICENSE.txt"
+    "main.93ec4393.css.map": "/music-ed-companion/static/css/main.93ec4393.css.map",
+    "main.61a241b8.js.map": "/music-ed-companion/static/js/main.61a241b8.js.map",
+    "787.b1245c56.chunk.js.map": "/music-ed-companion/static/js/787.b1245c56.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.23ae6d08.js",
-    "static/js/2.8680e452.chunk.js",
-    "static/css/main.41bffb35.chunk.css",
-    "static/js/main.b4963ca7.chunk.js"
+    "static/css/main.93ec4393.css",
+    "static/js/main.61a241b8.js"
   ]
 }
