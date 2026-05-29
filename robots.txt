@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://e7mac.github.io/music-ed-companion/sitemap.xml
