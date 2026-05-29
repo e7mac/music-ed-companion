@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# Music Ed Companion
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A browser player for music-theory and composition textbooks. Each musical example is played back through [SpessaSynth](https://github.com/spessasus/SpessaSynth) using a rich orchestral soundfont, displayed alongside the score image. Book and chapter data are fetched from S3 and rendered in a chapter-nav sidebar; clicking any example loads its MIDI and score image on demand.
 
-## Available Scripts
+## Dev
 
-In the project directory, you can run:
+```bash
+npm install      # install deps
+npm run dev      # Vite dev server → http://localhost:5173/music-ed-companion/
+npm run build    # tsc + vite build → dist/
+npm test         # vitest (run once)
+```
 
-### `yarn start`
+## Soundfont
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The app streams a large SF2 soundfont from S3 on first load. See [`SOUNDFONT.md`](SOUNDFONT.md) for the one-time S3 hosting step. The URL is configured in [`src/audio/soundfontConfig.ts`](src/audio/soundfontConfig.ts).
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Data Source
 
-### `yarn test`
+Book manifests are fetched from:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+https://music-ed.s3.us-east-2.amazonaws.com/<book>.json
+```
 
-### `yarn build`
+Each manifest lists chapters and examples. Example assets (MIDI, score images) live under the `baseUrl` declared in the manifest, e.g. `<baseUrl>/<chapter>/<file>`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Deploy
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Automatic:** pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/build.yml`), which runs `npm ci && npm run build` and publishes `dist/` to the `gh-pages` branch via `peaceiris/actions-gh-pages`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Manual:**
 
-### `yarn eject`
+```bash
+npm run deploy   # builds dist/ then pushes to gh-pages branch
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Live at: https://e7mac.github.io/music-ed-companion/
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Vite 6** — build tooling, dev server
+- **React 19** + **TypeScript** — UI
+- **Vitest** + **@testing-library/react** — unit/component tests
+- **spessasynth_lib** — in-browser SF2 MIDI synthesis
