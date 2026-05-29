@@ -25,7 +25,7 @@ import type { SynthBackend } from './SynthBackend';
 
 export class SpessaSynthBackend implements SynthBackend {
   private synth: WorkletSynthesizer;
-  private seq: Sequencer | null = null;
+  private seq: Sequencer;
 
   // Persisted settings — reapplied on every loadSong so they survive song changes
   private _rate = 1;
@@ -42,8 +42,9 @@ export class SpessaSynthBackend implements SynthBackend {
   // Whether the end event has fired for the current song (prevents double-fire)
   private _ended = false;
 
-  private constructor(synth: WorkletSynthesizer) {
+  private constructor(synth: WorkletSynthesizer, seq: Sequencer) {
     this.synth = synth;
+    this.seq = seq;
   }
 
   /**
@@ -72,7 +73,26 @@ export class SpessaSynthBackend implements SynthBackend {
     // Wire synth output → speakers
     synth.connect(context.destination);
 
-    return new SpessaSynthBackend(synth);
+    // Create the single Sequencer instance here (once per backend lifetime)
+    const seq = new Sequencer(synth);
+    const backend = new SpessaSynthBackend(synth, seq);
+
+    // Wire events once; the same handlers survive all song changes
+    seq.eventHandler.addEvent('songEnded', 'backend', () => {
+      backend._ended = true;
+      backend._stopRaf();
+      if (backend._endCb) {
+        backend._endCb();
+      }
+    });
+
+    seq.eventHandler.addEvent('timeChange', 'backend', (newTime: number) => {
+      if (backend._progressCb) {
+        backend._progressCb(newTime, seq.duration);
+      }
+    });
+
+    return backend;
   }
 
   // ------------------------------------------------------------------ //
@@ -80,87 +100,64 @@ export class SpessaSynthBackend implements SynthBackend {
   // ------------------------------------------------------------------ //
 
   async loadSong(midi: ArrayBuffer): Promise<void> {
-    // Tear down any previous sequencer
+    // Stop any ongoing playback and rAF loop
     this._stopRaf();
-    if (this.seq !== null) {
-      this.seq.pause();
-    }
+    this.seq.pause();
     this._ended = false;
 
-    const seq = new Sequencer(this.synth);
-    this.seq = seq;
-
-    // Wire events before loading so we don't miss anything
-    seq.eventHandler.addEvent('songEnded', 'backend', () => {
-      this._ended = true;
-      this._stopRaf();
-      if (this._endCb) {
-        this._endCb();
-      }
-    });
-
-    seq.eventHandler.addEvent('timeChange', 'backend', (newTime: number) => {
-      if (this._progressCb) {
-        this._progressCb(newTime, seq.duration);
-      }
-    });
-
-    // Load the song. loadNewSongList accepts { binary: ArrayBuffer }.
-    seq.loadNewSongList([{ binary: midi }]);
+    // Reuse the existing sequencer — load the new song into it
+    this.seq.loadNewSongList([{ binary: midi }]);
 
     // The song list is loaded synchronously from the main thread perspective;
     // wait one tick so the worklet has processed the list and midiData is populated.
     await new Promise<void>((resolve) => setTimeout(resolve, 0));
 
     // Reapply persisted settings
-    seq.playbackRate = this._rate;
+    this.seq.playbackRate = this._rate;
     this.synth.setSystemParameter('keyShift', this._transpose);
-    seq.loopCount = this._loop ? -1 : 0;
+    this.seq.loopCount = this._loop ? -1 : 0;
 
     // Start paused (loadNewSongList auto-starts; pause immediately)
-    seq.pause();
-    seq.currentTime = 0;
+    this.seq.pause();
+    this.seq.currentTime = 0;
 
-    // Start the rAF polling loop for smooth progress updates
-    this._startRaf();
+    // rAF loop is NOT started here — it starts on play() and stops on pause()/stop()
+    // Progress while paused is delivered by the 'timeChange' event wired above
   }
 
   play(): void {
-    if (!this.seq) return;
     this._ended = false;
     this.seq.play();
+    // Start the rAF polling loop for smooth progress updates and end-of-song detection
+    this._startRaf();
   }
 
   pause(): void {
-    if (!this.seq) return;
     this.seq.pause();
+    this._stopRaf();
   }
 
   stop(): void {
-    if (!this.seq) return;
     this.seq.pause();
     this.seq.currentTime = 0;
     this._ended = false;
+    this._stopRaf();
     if (this._progressCb) {
       this._progressCb(0, this.seq.duration);
     }
   }
 
   setCurrentTime(seconds: number): void {
-    if (!this.seq) return;
     this.seq.currentTime = seconds;
   }
 
   getDuration(): number {
-    if (!this.seq) return 0;
     return this.seq.duration;
   }
 
   setPlaybackRate(rate: number): void {
     this._rate = rate;
-    if (this.seq) {
-      this.seq.playbackRate = rate;
-    }
+    this.seq.playbackRate = rate;
   }
 
   setTranspose(semitones: number): void {
@@ -170,9 +167,7 @@ export class SpessaSynthBackend implements SynthBackend {
 
   setLoop(enabled: boolean): void {
     this._loop = enabled;
-    if (this.seq) {
-      this.seq.loopCount = enabled ? -1 : 0;
-    }
+    this.seq.loopCount = enabled ? -1 : 0;
   }
 
   onProgress(cb: (current: number, duration: number) => void): void {
@@ -181,6 +176,11 @@ export class SpessaSynthBackend implements SynthBackend {
 
   onEnd(cb: () => void): void {
     this._endCb = cb;
+  }
+
+  dispose(): void {
+    this._stopRaf();
+    this.seq.pause();
   }
 
   // ------------------------------------------------------------------ //
@@ -196,7 +196,6 @@ export class SpessaSynthBackend implements SynthBackend {
 
     const tick = () => {
       const seq = this.seq;
-      if (!seq) return;
 
       const current = seq.currentHighResolutionTime ?? seq.currentTime;
       const duration = seq.duration;

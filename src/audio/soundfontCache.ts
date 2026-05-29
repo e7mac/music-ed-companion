@@ -1,5 +1,10 @@
 const CACHE_NAME = 'music-ed-soundfont-v1';
 
+export async function clearSoundfontCache(url: string): Promise<void> {
+  const cache = await caches.open(CACHE_NAME);
+  await cache.delete(url);
+}
+
 export async function loadSoundfont(
   url: string,
   onProgress: (fraction: number) => void,

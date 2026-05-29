@@ -19,6 +19,7 @@ function Player({ engine }: { engine: AudioEngine }) {
   const [loadError, setLoadError] = useState('');
   const [ci, setCi] = useState(0);
   const [ei, setEi] = useState(0);
+  const [exampleError, setExampleError] = useState('');
   const { state, ...controls } = usePlayer(engine);
 
   useEffect(() => {
@@ -31,12 +32,15 @@ function Player({ engine }: { engine: AudioEngine }) {
 
   useEffect(() => {
     if (!book || !chapter || !example?.midi) return;
+    setExampleError('');
     const url = buildAssetUrl(book.baseUrl, chapter.name, example.midi);
     let cancelled = false;
     fetch(url)
       .then((r) => r.arrayBuffer())
-      .then((buf) => { if (!cancelled) controls.load(buf); })
-      .catch(() => {});
+      .then((buf) => { if (!cancelled) return controls.load(buf); })
+      .catch((err: unknown) => {
+        if (!cancelled) setExampleError(err instanceof Error ? err.message : String(err));
+      });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, ci, ei]);
@@ -67,6 +71,7 @@ function Player({ engine }: { engine: AudioEngine }) {
         </label>
       </header>
       {loadError && <p className="error">Could not load book: {loadError}</p>}
+      {exampleError && <p className="error">Could not load example: {exampleError}</p>}
       {book && chapter && example && (
         <main>
           <ExampleView

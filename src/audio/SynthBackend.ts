@@ -18,4 +18,6 @@ export interface SynthBackend {
   onProgress(cb: (current: number, duration: number) => void): void;
   /** Fired once when the song reaches its end (and loop is off). */
   onEnd(cb: () => void): void;
+  /** Release resources (stop rAF loop, silence output). */
+  dispose(): void;
 }

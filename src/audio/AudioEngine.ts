@@ -16,6 +16,7 @@ const MAX_TEMPO = 5;
 
 export class AudioEngine {
   private listeners = new Set<Listener>();
+  private loadToken = 0;
   private state: EngineState = {
     status: 'idle',
     currentTime: 0,
@@ -45,14 +46,17 @@ export class AudioEngine {
   }
 
   async load(midi: ArrayBuffer): Promise<void> {
+    const token = ++this.loadToken;
     this.patch({ status: 'loading', currentTime: 0 });
     try {
       await this.backend.loadSong(midi);
+      if (token !== this.loadToken) return; // a newer load superseded this one
       this.backend.setPlaybackRate(this.state.tempo);
       this.backend.setTranspose(this.state.transpose);
       this.backend.setLoop(this.state.loop);
       this.patch({ status: 'ready', duration: this.backend.getDuration() });
     } catch (err) {
+      if (token !== this.loadToken) return;
       this.patch({ status: 'error' });
       throw err;
     }
@@ -92,6 +96,10 @@ export class AudioEngine {
   setLoop(enabled: boolean): void {
     this.backend.setLoop(enabled);
     this.patch({ loop: enabled });
+  }
+
+  dispose(): void {
+    this.backend.dispose();
   }
 
   private patch(partial: Partial<EngineState>): void {

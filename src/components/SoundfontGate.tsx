@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AudioEngine } from '../audio/AudioEngine';
 import { SpessaSynthBackend } from '../audio/SpessaSynthBackend';
-import { loadSoundfont } from '../audio/soundfontCache';
+import { loadSoundfont, clearSoundfontCache } from '../audio/soundfontCache';
 import { SOUNDFONT_URL } from '../audio/soundfontConfig';
 
 type Phase = 'idle' | 'loading' | 'ready' | 'error';
@@ -22,6 +22,9 @@ export function SoundfontGate({ children }: { children: (engine: AudioEngine) =>
       setEngine(new AudioEngine(backend));
       setPhase('ready');
     } catch (e) {
+      // Attempt to evict a potentially corrupt cached soundfont so "Retry" re-downloads it.
+      // Swallow any cache-clearing error so the original error is preserved.
+      await clearSoundfontCache(SOUNDFONT_URL).catch(() => {});
       setError(e instanceof Error ? e.message : String(e));
       setPhase('error');
     }

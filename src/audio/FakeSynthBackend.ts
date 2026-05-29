@@ -27,6 +27,9 @@ export class FakeSynthBackend implements SynthBackend {
   onProgress(cb: (c: number, d: number) => void) { this.progressCb = cb; }
   onEnd(cb: () => void) { this.endCb = cb; }
 
+  disposed = false;
+  dispose(): void { this.disposed = true; }
+
   // test helpers
   emitProgress(c: number) { this.progressCb?.(c, this.duration); }
   emitEnd() { this.endCb?.(); }
