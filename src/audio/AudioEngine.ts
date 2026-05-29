@@ -11,6 +11,16 @@ export interface EngineState {
 
 type Listener = (state: EngineState) => void;
 
+/** Default engine state, used by the UI before an engine has been created. */
+export const IDLE_ENGINE_STATE: EngineState = {
+  status: 'idle',
+  currentTime: 0,
+  duration: 0,
+  tempo: 1,
+  transpose: 0,
+  loop: false,
+};
+
 const MIN_TEMPO = 0.1;
 const MAX_TEMPO = 5;
 

@@ -10,17 +10,22 @@ interface Props {
   chapterName: string;
   example: Example;
   state: EngineState;
+  busy?: boolean;
   controls: {
     play: () => void; pause: () => void; seek: (s: number) => void;
     setTempo: (m: number) => void; setTranspose: (n: number) => void; setLoop: (e: boolean) => void;
   };
 }
 
-export function ExampleView({ baseUrl, chapterName, example, state, controls }: Props) {
+export function ExampleView({ baseUrl, chapterName, example, state, busy, controls }: Props) {
   const imageSrc = example.image ? buildAssetUrl(baseUrl, chapterName, example.image) : null;
   return (
     <section className="example">
-      <h3>{example.name}</h3>
+      <header className="example-head">
+        <p className="example-chapter">{chapterName}</p>
+        <h2 className="example-name">{example.name}</h2>
+      </header>
+
       {example.midi ? (
         <TransportBar
           status={state.status}
@@ -29,6 +34,7 @@ export function ExampleView({ baseUrl, chapterName, example, state, controls }: 
           tempo={state.tempo}
           transpose={state.transpose}
           loop={state.loop}
+          busy={busy}
           onPlay={controls.play}
           onPause={controls.pause}
           onSeek={controls.seek}
@@ -39,7 +45,10 @@ export function ExampleView({ baseUrl, chapterName, example, state, controls }: 
       ) : example.mp3 ? (
         <Mp3Fallback src={buildAssetUrl(baseUrl, chapterName, example.mp3)} />
       ) : null}
-      <ScoreImage src={imageSrc} alt={example.name} />
+
+      <div className="score-frame">
+        <ScoreImage src={imageSrc} alt={example.name} />
+      </div>
     </section>
   );
 }
