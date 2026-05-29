@@ -70,6 +70,16 @@ body {
   gap: 0.6rem;
   white-space: nowrap;
 }
+.brand-home {
+  font: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  border-radius: 8px;
+}
+.brand-home:hover .brand-name { color: var(--clay); }
 .brand-mark {
   display: grid;
   place-items: center;
