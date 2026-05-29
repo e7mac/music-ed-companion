@@ -7,6 +7,7 @@ import { AudioEngine } from './audio/AudioEngine';
 import { useSoundfontEngine } from './hooks/useSoundfontEngine';
 import { usePlayer } from './hooks/usePlayer';
 import { useKeyboardNav } from './hooks/useKeyboardNav';
+import { useSeo } from './hooks/useSeo';
 import { BookNav } from './components/BookNav';
 import { ExampleView } from './components/ExampleView';
 import './App.css';
@@ -32,6 +33,14 @@ export default function App() {
   const [igniting, setIgniting] = useState(false);
 
   const { state, ...controls } = usePlayer(engine);
+  useSeo(bookTitle);
+
+  const changeBook = useCallback((title: string) => {
+    setBookTitle(title);
+    const url = new URL(window.location.href);
+    url.searchParams.set('book', title);
+    window.history.replaceState(null, '', url);
+  }, []);
 
   useEffect(() => {
     setBook(null);
@@ -160,7 +169,7 @@ export default function App() {
 
         <label className="book-select">
           <span className="sr-only">Book</span>
-          <select value={bookTitle} onChange={(e) => setBookTitle(e.target.value)}>
+          <select value={bookTitle} onChange={(e) => changeBook(e.target.value)}>
             {BOOK_TITLES.map((t) => (
               <option key={t} value={t}>
                 {t}

@@ -342,6 +342,15 @@ body {
 .app-footer a:hover { color: var(--clay); border-bottom-color: var(--clay); }
 .app-footer-sep { color: var(--ink-dim); }
 
+/* ---------- Prerender / no-JS fallback (replaced by the app on mount) ---------- */
+.prerender { max-width: 720px; margin: 0 auto; padding: 2.5rem 1rem; }
+.prerender h1 { font-family: var(--font-serif); font-size: 2rem; letter-spacing: -0.01em; margin: 0 0 0.75rem; }
+.prerender p { color: var(--ink-muted); line-height: 1.6; max-width: 56ch; }
+.prerender h2 { font-family: var(--font-serif); font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+.prerender-books { columns: 2; gap: 1.5rem; padding-left: 1.1rem; }
+.prerender-books a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--clay-soft); }
+.prerender-books a:hover { color: var(--clay); }
+
 /* ---------- Spinner ---------- */
 .spinner {
   display: inline-block;
