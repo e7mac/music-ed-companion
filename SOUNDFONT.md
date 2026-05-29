@@ -1,32 +1,37 @@
-# Soundfont setup
+# Soundfont
 
 MIDI examples are rendered in the browser by [SpessaSynth](https://github.com/spessasus/SpessaSynth)
-using a General MIDI soundfont. Quality of the audio depends entirely on this soundfont, so we use a
-rich orchestral one (FluidR3-class) rather than the previous generic Magenta `sgm_plus`.
+using a General MIDI soundfont. Audio quality depends entirely on this soundfont, so we use a rich
+orchestral one (FluidR3) rather than the previous generic Magenta `sgm_plus`.
 
-## How the app loads it
+## What ships
 
-`src/audio/soundfontConfig.ts` points at:
+`public/soundfonts/FluidR3_GM.sf3` — FluidR3_GM converted to SF3 (Ogg-Vorbis compressed),
+~22 MB (down from a 148 MB SF2). It is a static asset, so it deploys with the GitHub Pages build.
 
-```
-https://music-ed.s3.us-east-2.amazonaws.com/soundfonts/FluidR3_GM.sf3
-```
+`src/audio/soundfontConfig.ts` resolves its URL via `import.meta.env.BASE_URL`, so it works both in
+dev (`/soundfonts/...`) and in the production build under the `/music-ed-companion/` base.
 
-On first visit the file is downloaded once (with a progress bar) and stored in the Cache API
-(`src/audio/soundfontCache.ts`), so later visits load it instantly / offline.
+On first visit the file downloads once (with a progress bar) and is stored in the Cache API
+(`src/audio/soundfontCache.ts`); later visits load it instantly / offline.
 
-## One-time hosting step (requires S3 bucket credentials)
+## Regenerating the SF3 from an SF2 (headless, macOS)
 
-1. Obtain a **FluidR3_GM** soundfont and convert it to **SF3** (Ogg-Vorbis compressed) — e.g. with
-   the SpessaSynth web tool at https://spessasus.github.io/SpessaSynth/ → "Export → compressed SF3".
-   SF3 brings a ~148 MB SF2 down to the tens-of-MB range.
-2. Upload it to the existing bucket at `s3://music-ed/soundfonts/FluidR3_GM.sf3`, publicly readable,
-   with the same permissive CORS the book JSON already uses.
-3. Verify:
-   ```
-   curl -sI "https://music-ed.s3.us-east-2.amazonaws.com/soundfonts/FluidR3_GM.sf3"
-   ```
-   Expect `HTTP/1.1 200`, a `Content-Length` header, and `accept-ranges`.
+`sl-web-ogg` (the encoder SpessaSynth's web app uses) is browser-only and won't run in Node. The
+working headless path is `spessasynth_core` (runs in Node) + `oggenc` as the compression function:
 
-If first-load size proves too heavy on mobile, a future fast-follow can trim the soundfont to only
-the GM presets the books actually use (the orchestration book realistically touches <40 of 128).
+1. `brew install vorbis-tools`
+2. Load the SF2 with `SoundBankLoader.fromArrayBuffer(...)`.
+3. `await bank.setSampleFormat({ format: "compressed", compressionFunction })`, where
+   `compressionFunction(float32, sampleRate)` writes a 16-bit-PCM WAV and runs
+   `oggenc -Q -q 4 -o out.ogg in.wav`, returning the ogg bytes as a `Uint8Array`.
+4. `writeFileSync(out, Buffer.from(bank.writeSF2()))` — `writeSF2()` emits SF3 when the samples are
+   flagged compressed.
+
+FluidR3_GM compresses 148 MB → ~22 MB at `-q 4` in ~10s. Validate a sample with
+`ogginfo` (extract via `sample.getRawData(true)`); expect valid mono Vorbis at the sample's native
+rate. (Decoding SF3 in standalone Node logs "SF3 decoder has not been initialized" — that's a Node
+limitation, not a bad file; the app's `WorkletSynthesizer` initializes the decoder on load.)
+
+If the soundfont's size ever becomes a concern, trim it to only the GM presets the books use
+(`spessasynth_core` can trim a bank in-place to a given MIDI's presets).

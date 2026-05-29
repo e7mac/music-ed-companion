@@ -1,4 +1,5 @@
 // URL of the orchestral soundfont (SF3, Vorbis-compressed) used for MIDI playback.
-// Hosted on the same S3 bucket that serves the book JSON. See README "Soundfont".
-export const SOUNDFONT_URL =
-  'https://music-ed.s3.us-east-2.amazonaws.com/soundfonts/FluidR3_GM.sf3';
+// Shipped as a static asset in public/soundfonts/ so it deploys with the GitHub Pages
+// build. BASE_URL resolves to '/' in dev and '/music-ed-companion/' in the production
+// build, so this works in both. See SOUNDFONT.md.
+export const SOUNDFONT_URL = `${import.meta.env.BASE_URL}soundfonts/FluidR3_GM.sf3`;
