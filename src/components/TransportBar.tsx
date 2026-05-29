@@ -19,6 +19,18 @@ interface Props {
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
+const PlayIcon = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+    <path d="M8 5v14l11-7z" />
+  </svg>
+);
+const PauseIcon = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+    <rect x="6" y="5" width="4" height="14" rx="1" />
+    <rect x="14" y="5" width="4" height="14" rx="1" />
+  </svg>
+);
+
 function fmtTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) sec = 0;
   const m = Math.floor(sec / 60);
@@ -36,7 +48,7 @@ export function TransportBar(props: Props) {
         aria-label={playing ? 'Pause' : 'Play'}
         onClick={playing ? props.onPause : props.onPlay}
       >
-        {props.busy ? <span className="spinner" aria-hidden="true" /> : playing ? '⏸' : '▶'}
+        {props.busy ? <span className="spinner" aria-hidden="true" /> : playing ? <PauseIcon /> : <PlayIcon />}
       </button>
 
       <div className="seek">

@@ -205,6 +205,17 @@ export default function App() {
           <BookNav book={book} chapterIndex={ci} exampleIndex={ei} onSelect={select} />
         </div>
       )}
+
+      <footer className="app-footer">
+        <span className="app-footer-label">More tools</span>
+        <a href="https://realeartrainer.com" target="_blank" rel="noopener noreferrer">
+          Real Ear Trainer
+        </a>
+        <span className="app-footer-sep" aria-hidden="true">·</span>
+        <a href="https://realsightreader.com" target="_blank" rel="noopener noreferrer">
+          Real Sight Reader
+        </a>
+      </footer>
     </div>
   );
 }
