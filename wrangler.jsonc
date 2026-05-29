@@ -1,0 +1,12 @@
+{
+  // Cloudflare Workers Static Assets deployment.
+  // Serves the built `dist/` as a static site at the worker root.
+  // Deploy with:  npm run deploy:cf   (builds, then `wrangler deploy`)
+  // The Vite build uses a relative base ("./"), so the same dist works both
+  // here (served at "/") and on GitHub Pages (served at "/music-ed-companion/").
+  "name": "music-ed-companion",
+  "compatibility_date": "2025-05-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}
