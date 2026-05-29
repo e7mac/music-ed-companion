@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://e7mac.github.io/music-ed-companion/sitemap.xml
+Sitemap: https://textbook.realmusictheory.com/sitemap.xml

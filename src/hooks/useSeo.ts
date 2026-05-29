@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 const SITE = 'Music Ed';
+const SITE_ORIGIN = 'https://textbook.realmusictheory.com';
 const HOME_TITLE = 'Music Ed — Examples from Classic Music-Theory & Orchestration Textbooks';
 
 function setAttr(selector: string, attr: string, value: string) {
@@ -10,20 +11,19 @@ function setAttr(selector: string, attr: string, value: string) {
 
 /**
  * Keeps the document title and canonical/OG URLs in sync with the selected book,
- * so each ?book= URL is indexed with its own title. Googlebot renders JS, so it
- * picks these up. The bare homepage (no ?book param) keeps the generic title and
- * canonicalizes to the root.
+ * so each ?book= URL is indexed with its own title. URLs are anchored to the
+ * canonical domain (SITE_ORIGIN) rather than the serving host, so any mirror
+ * (e.g. the GitHub Pages copy) consolidates to the production domain.
+ * The bare homepage (no ?book param) keeps the generic title and canonicalizes
+ * to the root.
  */
 export function useSeo(bookTitle: string) {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const hasBookParam = params.has('book');
+    const hasBookParam = new URLSearchParams(window.location.search).has('book');
 
-    const origin = window.location.origin;
-    const path = window.location.pathname;
     const url = hasBookParam
-      ? `${origin}${path}?book=${encodeURIComponent(bookTitle)}`
-      : `${origin}${path}`;
+      ? `${SITE_ORIGIN}/?book=${encodeURIComponent(bookTitle)}`
+      : `${SITE_ORIGIN}/`;
     const title = hasBookParam ? `${bookTitle} — ${SITE}` : HOME_TITLE;
 
     document.title = title;

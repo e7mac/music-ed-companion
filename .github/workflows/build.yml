@@ -1,4 +1,7 @@
-name: Build and Deploy
+name: Redirect GitHub Pages to textbook.realmusictheory.com
+
+# The app now lives at https://textbook.realmusictheory.com/ (Cloudflare).
+# GitHub Pages just serves a redirect stub so the old URL forwards there.
 
 on:
   push:
@@ -6,28 +9,14 @@ on:
       - main
 
 jobs:
-  build:
+  redirect:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy redirect to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-
+          publish_dir: ./gh-pages-redirect
