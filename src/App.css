@@ -342,6 +342,34 @@ body {
   color: var(--ink-muted);
 }
 .app-footer-label { font-weight: 600; }
+.app-footer-more {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+}
+.app-footer-more a {
+  color: var(--ink-dim);
+  font-weight: 500;
+  font-size: 0.78rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.app-footer-more a:hover { color: var(--clay); border-bottom-color: var(--clay); }
+.app-footer-more-label { font-weight: 600; color: var(--ink-dim); }
+.app-footer-main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 .app-footer a {
   color: var(--ink);
   font-weight: 600;
