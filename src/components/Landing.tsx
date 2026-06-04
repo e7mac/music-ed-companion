@@ -86,6 +86,10 @@ export function Landing({ onSelectBook }: LandingProps) {
         <a href="https://realsightreader.com" target="_blank" rel="noopener noreferrer">
           Real Sight Reader
         </a>
+        <span className="app-footer-sep" aria-hidden="true">·</span>
+        <a href="mailto:hello@realmusictheory.com">Contact</a>
+        <span className="app-footer-sep" aria-hidden="true">·</span>
+        Made by <a href="https://e7mac.com" target="_blank" rel="noopener noreferrer">e7mac</a>
       </footer>
     </div>
   );
