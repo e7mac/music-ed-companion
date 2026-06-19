@@ -14,6 +14,7 @@ interface Props {
   controls: {
     play: () => void; pause: () => void; seek: (s: number) => void;
     setTempo: (m: number) => void; setTranspose: (n: number) => void; setLoop: (e: boolean) => void;
+    volume: number; setVolume: (v: number) => void;
   };
 }
 
@@ -41,6 +42,8 @@ export function ExampleView({ baseUrl, chapterName, example, state, busy, contro
           onTempo={controls.setTempo}
           onTranspose={controls.setTranspose}
           onLoop={controls.setLoop}
+          volume={controls.volume}
+          onVolume={controls.setVolume}
         />
       ) : example.mp3 ? (
         <Mp3Fallback src={buildAssetUrl(baseUrl, chapterName, example.mp3)} />

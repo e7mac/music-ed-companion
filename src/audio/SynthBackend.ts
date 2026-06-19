@@ -14,6 +14,8 @@ export interface SynthBackend {
   /** Semitone offset applied to all channels. */
   setTranspose(semitones: number): void;
   setLoop(enabled: boolean): void;
+  /** Master output gain, 0 (silent) to 1 (full). */
+  setVolume(gain: number): void;
   /** Fired periodically with (currentSeconds, durationSeconds). */
   onProgress(cb: (current: number, duration: number) => void): void;
   /** Fired once when the song reaches its end (and loop is off). */

@@ -6,6 +6,7 @@ import type { Book } from './data/bookTypes';
 import { AudioEngine } from './audio/AudioEngine';
 import { useSoundfontEngine } from './hooks/useSoundfontEngine';
 import { usePlayer } from './hooks/usePlayer';
+import { useVolume } from './hooks/useVolume';
 import { useKeyboardNav } from './hooks/useKeyboardNav';
 import { BookNav } from './components/BookNav';
 import { ExampleView } from './components/ExampleView';
@@ -34,6 +35,7 @@ export function Player({ bookTitle, onChangeBook, onHome }: PlayerProps) {
   const [igniting, setIgniting] = useState(false);
 
   const { state, ...controls } = usePlayer(engine);
+  const { volume, setVolume } = useVolume(engine);
 
   useEffect(() => {
     setBook(null);
@@ -148,6 +150,8 @@ export function Player({ bookTitle, onChangeBook, onHome }: PlayerProps) {
     setTempo: controls.setTempo,
     setTranspose: controls.setTranspose,
     setLoop: controls.setLoop,
+    volume,
+    setVolume,
   };
 
   const busy = igniting || state.status === 'loading';

@@ -4,7 +4,12 @@
 // build, so this works in both. See SOUNDFONT.md.
 export const SOUNDFONT_URL = `${import.meta.env.BASE_URL}soundfonts/FluidR3_GM.sf3`;
 
-// Master output gain for MIDI playback (0–1). FluidR3_GM plays hot, so we
-// attenuate the synth before the speakers to keep playback at a comfortable
-// level (users reported the piano was too loud). Lower = quieter; 0.5 ≈ −6 dB.
-export const MASTER_GAIN = 0.5;
+// Default master output gain for MIDI playback (0–1). FluidR3_GM plays hot, so
+// we attenuate the synth before the speakers (users reported the piano was too
+// loud). This is just the default — users can adjust it via the volume control,
+// and their choice is persisted in localStorage under VOLUME_STORAGE_KEY.
+// Lower = quieter; 0.5 ≈ −6 dB.
+export const DEFAULT_VOLUME = 0.5;
+
+// localStorage key for the user's persisted playback volume (0–1).
+export const VOLUME_STORAGE_KEY = 'mec-volume';

@@ -22,7 +22,7 @@
 
 import { WorkletSynthesizer, Sequencer } from 'spessasynth_lib';
 import type { SynthBackend } from './SynthBackend';
-import { MASTER_GAIN } from './soundfontConfig';
+import { DEFAULT_VOLUME } from './soundfontConfig';
 
 export class SpessaSynthBackend implements SynthBackend {
   private synth: WorkletSynthesizer;
@@ -76,7 +76,7 @@ export class SpessaSynthBackend implements SynthBackend {
     // Wire synth output → master gain → speakers. The gain stage attenuates
     // FluidR3_GM (which plays hot) to a comfortable level. See MASTER_GAIN.
     const masterGain = context.createGain();
-    masterGain.gain.value = MASTER_GAIN;
+    masterGain.gain.value = DEFAULT_VOLUME;
     synth.connect(masterGain);
     masterGain.connect(context.destination);
 
@@ -175,6 +175,10 @@ export class SpessaSynthBackend implements SynthBackend {
   setLoop(enabled: boolean): void {
     this._loop = enabled;
     this.seq.loopCount = enabled ? -1 : 0;
+  }
+
+  setVolume(gain: number): void {
+    this.masterGain.gain.value = Math.min(1, Math.max(0, gain));
   }
 
   onProgress(cb: (current: number, duration: number) => void): void {

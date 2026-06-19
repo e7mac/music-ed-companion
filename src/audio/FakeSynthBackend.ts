@@ -5,6 +5,7 @@ export class FakeSynthBackend implements SynthBackend {
   rate = 1;
   transpose = 0;
   loop = false;
+  volume = 1;
   playing = false;
   current = 0;
   loadCalls = 0;
@@ -24,6 +25,7 @@ export class FakeSynthBackend implements SynthBackend {
   setPlaybackRate(r: number) { this.rate = r; }
   setTranspose(n: number) { this.transpose = n; }
   setLoop(e: boolean) { this.loop = e; }
+  setVolume(g: number) { this.volume = g; }
   onProgress(cb: (c: number, d: number) => void) { this.progressCb = cb; }
   onEnd(cb: () => void) { this.endCb = cb; }
 

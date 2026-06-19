@@ -268,6 +268,42 @@ body {
 .loop-toggle.on { color: var(--clay); }
 .loop-toggle input { accent-color: var(--clay); cursor: pointer; }
 
+/* ---------- Volume control ---------- */
+.volume { position: relative; display: inline-flex; align-items: center; }
+.volume-btn {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border: 1px solid var(--ink-faint);
+  background: var(--bg-raised);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--ink-muted);
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.volume-btn:hover,
+.volume-btn[aria-expanded="true"] { border-color: var(--clay-soft); background: var(--bg-tint); color: var(--clay); }
+.volume-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--ink-faint);
+  border-radius: 12px;
+  box-shadow: var(--shadow-paper);
+  z-index: 20;
+}
+.volume-slider { width: 120px; accent-color: var(--clay); cursor: pointer; }
+.volume-value {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  min-width: 2.8em; text-align: right;
+}
+
 /* ---------- Sidebar nav ---------- */
 .book-nav {
   background: var(--bg-raised);

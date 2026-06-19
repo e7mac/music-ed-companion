@@ -108,6 +108,12 @@ export class AudioEngine {
     this.patch({ loop: enabled });
   }
 
+  /** Master output gain, 0 (silent) to 1 (full). Not part of EngineState —
+   *  the UI owns/persists the volume and re-applies it when an engine exists. */
+  setVolume(gain: number): void {
+    this.backend.setVolume(gain);
+  }
+
   dispose(): void {
     this.backend.dispose();
   }

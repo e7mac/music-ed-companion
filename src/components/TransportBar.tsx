@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import type { PlaybackStatus } from '../audio/SynthBackend';
 
 interface Props {
@@ -7,6 +8,8 @@ interface Props {
   tempo: number;
   transpose: number;
   loop: boolean;
+  /** Master playback volume, 0–1. */
+  volume: number;
   /** True while the audio engine is being created/initialized after a Play tap. */
   busy?: boolean;
   onPlay: () => void;
@@ -15,6 +18,7 @@ interface Props {
   onTempo: (m: number) => void;
   onTranspose: (n: number) => void;
   onLoop: (e: boolean) => void;
+  onVolume: (v: number) => void;
 }
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
@@ -30,6 +34,78 @@ const PauseIcon = () => (
     <rect x="14" y="5" width="4" height="14" rx="1" />
   </svg>
 );
+
+function VolumeIcon({ level }: { level: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+      <path d="M3 9v6h4l5 4V5L7 9H3z" />
+      {level <= 0.001 ? (
+        <path d="M16.5 9.5l5 5M21.5 9.5l-5 5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+      ) : level < 0.5 ? (
+        <path d="M16 9.5a3.5 3.5 0 010 5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+      ) : (
+        <>
+          <path d="M16 8a6 6 0 010 8" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <path d="M16.5 11a2 2 0 010 2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+/** A master-volume button that reveals a slider popover. */
+function VolumeControl({ volume, onVolume }: { volume: number; onVolume: (v: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocPointer = (e: PointerEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', onDocPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDocPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const pct = Math.round(volume * 100);
+  return (
+    <div className="volume" ref={ref}>
+      <button
+        type="button"
+        className="volume-btn"
+        aria-label={`Volume ${pct}%`}
+        aria-expanded={open}
+        title="Volume"
+        onClick={() => setOpen((o) => !o)}
+      >
+        <VolumeIcon level={volume} />
+      </button>
+      {open && (
+        <div className="volume-popover" role="group" aria-label="Volume">
+          <input
+            type="range"
+            className="volume-slider"
+            aria-label="Volume"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volume}
+            autoFocus
+            onChange={(e) => onVolume(Number(e.target.value))}
+          />
+          <span className="volume-value">{pct}%</span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function fmtTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) sec = 0;
@@ -50,6 +126,8 @@ export function TransportBar(props: Props) {
       >
         {props.busy ? <span className="spinner" aria-hidden="true" /> : playing ? <PauseIcon /> : <PlayIcon />}
       </button>
+
+      <VolumeControl volume={props.volume} onVolume={props.onVolume} />
 
       <div className="seek">
         <input
