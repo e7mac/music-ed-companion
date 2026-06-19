@@ -202,7 +202,7 @@ body {
   padding: 0.6rem 0.8rem;
   background: var(--bg-tint);
   border: 1px solid var(--ink-faint);
-  border-radius: 999px;
+  border-radius: 16px;
 }
 .play-btn {
   flex: none;
