@@ -22,10 +22,12 @@
 
 import { WorkletSynthesizer, Sequencer } from 'spessasynth_lib';
 import type { SynthBackend } from './SynthBackend';
+import { MASTER_GAIN } from './soundfontConfig';
 
 export class SpessaSynthBackend implements SynthBackend {
   private synth: WorkletSynthesizer;
   private seq: Sequencer;
+  private masterGain: GainNode;
 
   // Persisted settings — reapplied on every loadSong so they survive song changes
   private _rate = 1;
@@ -42,9 +44,10 @@ export class SpessaSynthBackend implements SynthBackend {
   // Whether the end event has fired for the current song (prevents double-fire)
   private _ended = false;
 
-  private constructor(synth: WorkletSynthesizer, seq: Sequencer) {
+  private constructor(synth: WorkletSynthesizer, seq: Sequencer, masterGain: GainNode) {
     this.synth = synth;
     this.seq = seq;
+    this.masterGain = masterGain;
   }
 
   /**
@@ -70,12 +73,16 @@ export class SpessaSynthBackend implements SynthBackend {
     await synth.soundBankManager.addSoundBank(soundfont, 'main');
     await synth.isReady;
 
-    // Wire synth output → speakers
-    synth.connect(context.destination);
+    // Wire synth output → master gain → speakers. The gain stage attenuates
+    // FluidR3_GM (which plays hot) to a comfortable level. See MASTER_GAIN.
+    const masterGain = context.createGain();
+    masterGain.gain.value = MASTER_GAIN;
+    synth.connect(masterGain);
+    masterGain.connect(context.destination);
 
     // Create the single Sequencer instance here (once per backend lifetime)
     const seq = new Sequencer(synth);
-    const backend = new SpessaSynthBackend(synth, seq);
+    const backend = new SpessaSynthBackend(synth, seq, masterGain);
 
     // Wire events once; the same handlers survive all song changes
     seq.eventHandler.addEvent('songEnded', 'backend', () => {
@@ -181,6 +188,7 @@ export class SpessaSynthBackend implements SynthBackend {
   dispose(): void {
     this._stopRaf();
     this.seq.pause();
+    this.masterGain.disconnect();
   }
 
   // ------------------------------------------------------------------ //
