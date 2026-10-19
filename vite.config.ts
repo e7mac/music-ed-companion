@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { BOOK_TITLES } from './src/data/books';
+import { buildLlmsTxt, checkLlmsTxt } from './src/data/llmsTxt';
 
 // Inject crawlable, real content into #root at build time (a lightweight
 // prerender). Search engines and no-JS visitors get a heading, intro, and
@@ -27,12 +28,26 @@ function seoPrerender(): Plugin {
   };
 }
 
+// Emit /llms.txt into dist from the same book data, failing the build if the
+// privacy/copyright check (src/data/llmsTxt.ts) finds a problem.
+function llmsTxt(): Plugin {
+  return {
+    name: 'llms-txt',
+    generateBundle() {
+      const source = buildLlmsTxt();
+      const errs = checkLlmsTxt(source);
+      if (errs.length) throw new Error('llms.txt check failed:\n  ' + errs.join('\n  '));
+      this.emitFile({ type: 'asset', fileName: 'llms.txt', source });
+    },
+  };
+}
+
 export default defineConfig({
   // Relative base so the same build works under any mount point:
   // GitHub Pages' /music-ed-companion/ subpath AND a root-served host
   // (e.g. a Cloudflare Worker at music-ed-companion.*.workers.dev).
   base: './',
-  plugins: [react(), seoPrerender()],
+  plugins: [react(), seoPrerender(), llmsTxt()],
   test: {
     environment: 'jsdom',
     globals: true,
