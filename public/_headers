@@ -1,0 +1,3 @@
+# Cloudflare serves .txt as bare text/plain; llms.txt has non-ASCII, so declare UTF-8.
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
